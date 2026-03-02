@@ -1,20 +1,18 @@
 <?php
-/**
  * Anggota 3: Halaman Result
- * Menghubungkan input Anggota 2 dengan fungsi Anggota 4
+ * Menghubungkan input dengan fungsi
  */
 
 // LANGKAH PENTING: Memanggil file functions.php agar fungsi hitungBMI() dikenali
 require_once 'functions.php'; 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Mengambil data dari form index.php (Anggota 2)
+    // Mengambil data dari form index.php
     $gender = $_POST['gender'] ?? '';
     $berat  = $_POST['weight'] ?? 0; 
     $tinggi = $_POST['height'] ?? 0;
 
-    // Menjalankan fungsi dari Anggota 4
-    // Baris di bawah ini tidak akan error lagi setelah ada require_once di atas
+    // Menjalankan fungsi
     $hasil = hitungBMI($berat, $tinggi, $gender);
 
     if (isset($hasil['error'])) {
