@@ -1,4 +1,5 @@
 <?php
+/*
  * Anggota 3: Halaman Result
  * Menghubungkan input dengan fungsi
  */
