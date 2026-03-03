@@ -37,20 +37,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div style="text-align: center; margin-top: 50px; font-family: sans-serif;">
+    <div class="container-bmi">
         <?php if (isset($pesan_error)): ?>
-            <h3 style="color: red;"><?php echo $pesan_error; ?></h3>
+            <div class="error-box">
+                <h3><?php echo $pesan_error; ?></h3>
+                <a href="index.php" class="btn-back">Kembali</a>
+            </div>
         <?php else: ?>
-            <h2>Hasil Perhitungan BMI</h2>
-            <p>Skor: <strong><?php echo $skor_bmi; ?></strong></p>
-            <p>Kategori: <strong><?php echo $kategori; ?></strong></p>
-            <p><i><?php echo $deskripsi; ?></i></p>
-            <div style="margin-top: 20px; padding: 10px; background: #f0f0f0; display: inline-block;">
-                <strong>Saran:</strong><br><?php echo $tips; ?>
+            <div class="result-card">
+                <h2>Hasil Perhitungan BMI</h2>
+
+                <div class="result-score">
+                    <span>Skor BMI</span>
+                    <h1><?php echo $skor_bmi; ?></h1>
+                </div>
+
+                <div class="result-category">
+                    <strong><?php echo $kategori; ?></strong>
+                    <p><?php echo $deskripsi; ?></p>
+                </div>
+
+                <div class="result-tips">
+                    <h4>Saran</h4>
+                    <p><?php echo $tips; ?></p>
+                </div>
+
+                <a href="index.php" class="btn-back">Hitung Ulang</a>
             </div>
         <?php endif; ?>
-        <br><br>
-        <a href="index.php">Kembali</a>
     </div>
 </body>
 </html>
