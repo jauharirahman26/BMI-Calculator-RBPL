@@ -1,27 +1,36 @@
 <?php
- * Anggota 3: Halaman Result
- * Menghubungkan input dengan fungsi
- */
-
-// LANGKAH PENTING: Memanggil file functions.php agar fungsi hitungBMI() dikenali
 require_once 'functions.php'; 
 
+$pesan_error = "";
+$skor_bmi = null;
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Mengambil data dari form index.php
-    $gender = $_POST['gender'] ?? '';
-    $berat  = $_POST['weight'] ?? 0; 
-    $tinggi = $_POST['height'] ?? 0;
+    
+    $gender = isset($_POST['gender']) ? trim($_POST['gender']) : '';
+    $berat  = isset($_POST['weight']) ? trim($_POST['weight']) : ''; 
+    $tinggi = isset($_POST['height']) ? trim($_POST['height']) : '';
 
-    // Menjalankan fungsi
-    $hasil = hitungBMI($berat, $tinggi, $gender);
+    if (empty($gender) || empty($berat) || empty($tinggi)) {
+        $pesan_error = "Data tidak lengkap! Harap isi berat, tinggi, dan pilih jenis kelamin.";
+    } 
+    elseif (!is_numeric($berat) || !is_numeric($tinggi)) {
+        $pesan_error = "Berat dan tinggi harus berupa angka.";
+    } 
+    elseif ($berat <= 0 || $tinggi <= 0) {
+        $pesan_error = "Nilai berat dan tinggi harus lebih besar dari nol.";
+    }
 
-    if (isset($hasil['error'])) {
-        $pesan_error = $hasil['error'];
-    } else {
-        $skor_bmi  = $hasil['bmi'];
-        $kategori  = $hasil['kategori'];
-        $deskripsi = $hasil['deskripsi'];
-        $tips      = $hasil['tips'];
+    if (empty($pesan_error)) {
+        $hasil = hitungBMI($berat, $tinggi, $gender);
+
+        if (isset($hasil['error'])) {
+            $pesan_error = $hasil['error'];
+        } else {
+            $skor_bmi  = $hasil['bmi'];
+            $kategori  = $hasil['kategori'];
+            $deskripsi = $hasil['deskripsi'];
+            $tips      = $hasil['tips'];
+        }
     }
 } else {
     header("Location: index.php");
@@ -34,23 +43,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <title>Hasil Analisis BMI</title>
-    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="style.css"> 
 </head>
 <body>
     <div style="text-align: center; margin-top: 50px; font-family: sans-serif;">
-        <?php if (isset($pesan_error)): ?>
-            <h3 style="color: red;"><?php echo $pesan_error; ?></h3>
-        <?php else: ?>
+        
+        <?php if (!empty($pesan_error)): ?>
+            <div style="color: white; background: #e74c3c; padding: 20px; display: inline-block; border-radius: 8px;">
+                <strong>Kesalahan Validasi:</strong><br>
+                <?php echo htmlspecialchars($pesan_error); ?>
+            </div>
+        
+        <?php elseif ($skor_bmi !== null): ?>
             <h2>Hasil Perhitungan BMI</h2>
-            <p>Skor: <strong><?php echo $skor_bmi; ?></strong></p>
+            <p>Skor BMI: <strong><?php echo number_format($skor_bmi, 1); ?></strong></p>
             <p>Kategori: <strong><?php echo $kategori; ?></strong></p>
             <p><i><?php echo $deskripsi; ?></i></p>
-            <div style="margin-top: 20px; padding: 10px; background: #f0f0f0; display: inline-block;">
-                <strong>Saran:</strong><br><?php echo $tips; ?>
+            
+            <div style="margin-top: 20px; padding: 15px; background: #ecf0f1; display: inline-block; border-radius: 8px; border-left: 5px solid #2ecc71;">
+                <strong>Saran Kesehatan:</strong><br>
+                <?php echo $tips; ?>
             </div>
         <?php endif; ?>
+
         <br><br>
-        <a href="index.php">Kembali</a>
+        <a href="index.php" style="text-decoration: none; color: #3498db;">← Kembali Hitung</a>
     </div>
 </body>
 </html>
