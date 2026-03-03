@@ -1,15 +1,19 @@
 <?php
+/**
+ * INTEGRASI FINAL: Anggota 6 (Validasi) + Anggota 3 (Tampilan)
+ */
 require_once 'functions.php'; 
 
 $pesan_error = "";
 $skor_bmi = null;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    
+    // 1. Ambil & Bersihkan Data (Tugas Anggota 6)
     $gender = isset($_POST['gender']) ? trim($_POST['gender']) : '';
     $berat  = isset($_POST['weight']) ? trim($_POST['weight']) : ''; 
     $tinggi = isset($_POST['height']) ? trim($_POST['height']) : '';
 
+    // 2. Validasi Server-Side (Tugas Anggota 6)
     if (empty($gender) || empty($berat) || empty($tinggi)) {
         $pesan_error = "Data tidak lengkap! Harap isi berat, tinggi, dan pilih jenis kelamin.";
     } 
@@ -20,6 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $pesan_error = "Nilai berat dan tinggi harus lebih besar dari nol.";
     }
 
+    // 3. Eksekusi Fungsi (Tugas Anggota 4)
     if (empty($pesan_error)) {
         $hasil = hitungBMI($berat, $tinggi, $gender);
 
@@ -42,32 +47,45 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <html lang="id">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hasil Analisis BMI</title>
     <link rel="stylesheet" href="style.css"> 
 </head>
 <body>
-    <div style="text-align: center; margin-top: 50px; font-family: sans-serif;">
+    <div class="container-bmi">
         
         <?php if (!empty($pesan_error)): ?>
-            <div style="color: white; background: #e74c3c; padding: 20px; display: inline-block; border-radius: 8px;">
-                <strong>Kesalahan Validasi:</strong><br>
-                <?php echo htmlspecialchars($pesan_error); ?>
+            <div class="error-box" style="text-align: center; margin-top: 50px;">
+                <div style="background: #e74c3c; color: white; padding: 20px; border-radius: 8px; display: inline-block;">
+                    <h3>Oops! Ada Kesalahan</h3>
+                    <p><?php echo htmlspecialchars($pesan_error); ?></p>
+                    <a href="index.php" style="color: white; text-decoration: underline;">Kembali</a>
+                </div>
             </div>
-        
+
         <?php elseif ($skor_bmi !== null): ?>
-            <h2>Hasil Perhitungan BMI</h2>
-            <p>Skor BMI: <strong><?php echo number_format($skor_bmi, 1); ?></strong></p>
-            <p>Kategori: <strong><?php echo $kategori; ?></strong></p>
-            <p><i><?php echo $deskripsi; ?></i></p>
-            
-            <div style="margin-top: 20px; padding: 15px; background: #ecf0f1; display: inline-block; border-radius: 8px; border-left: 5px solid #2ecc71;">
-                <strong>Saran Kesehatan:</strong><br>
-                <?php echo $tips; ?>
+            <div class="result-card">
+                <h2>Hasil Perhitungan BMI</h2>
+
+                <div class="result-score">
+                    <span>Skor BMI</span>
+                    <h1><?php echo number_format($skor_bmi, 1); ?></h1>
+                </div>
+
+                <div class="result-category">
+                    <strong><?php echo $kategori; ?></strong>
+                    <p><?php echo $deskripsi; ?></p>
+                </div>
+
+                <div class="result-tips">
+                    <h4>Saran Kesehatan</h4>
+                    <p><?php echo $tips; ?></p>
+                </div>
+
+                <a href="index.php" class="btn-back">Hitung Ulang</a>
             </div>
         <?php endif; ?>
 
-        <br><br>
-        <a href="index.php" style="text-decoration: none; color: #3498db;">← Kembali Hitung</a>
     </div>
 </body>
 </html>
